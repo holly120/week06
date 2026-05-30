@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 👾 太空小蜜蜂：極限彈幕街機版 (Galactica Retro Arcade)
 
-## Getting Started
+一個使用 **Next.js 16 (App Router)**、**TypeScript** 與 **Vanilla CSS** 打造的極致流暢、帶有 8-bit 電子合成音效與實體存檔功能的太空小蜜蜂 (Space Invaders / Galaga) 射擊遊戲網頁 App！
 
-First, run the development server:
+> 🌌 **「捍衛星系，登錄傳奇！消滅自動生成的小蜜蜂，在星際排行榜留下你的名字！」**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 遊戲核心特色 (Core Features)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **🛸 高性能 2D Canvas 遊戲引擎**
+   - 採用 HTML5 Canvas 繪圖與 60fps 流暢渲染。
+   - 包含動態下移的小蜜蜂蜂群、流暢的玩家戰機操控、噴射口動態火焰以及細緻的碎星爆炸粒子（Particles）效果。
+2. **🎵 Web Audio API 復古合成音效 (零頻寬消耗)**
+   - 遊戲完全不載入任何實體 `.mp3` 或 `.wav` 檔案，全部音效皆使用瀏覽器內建的 **Web Audio API** 即時編程合成！
+   - 提供 8-bit 的「戰機射擊聲」、「小蜜蜂射擊聲」、「爆炸巨響聲」，以及熱血的「遊戲開始上升旋律」與悲傷的「Game Over 下降旋律」。
+3. **🎨 霓虹復古大型機台風格 (CRT Scanline Filter)**
+   - 使用 Vanilla CSS 打造玻璃擬物化 (Glassmorphic) 控制面板與螢幕發光霓虹效果。
+   - 內建 **CRT 顯示器掃描線 (Scanline) 濾鏡**，重現 80 年代實體大型機台的顆粒感與懷舊情懷。
+4. **💾 排行榜實體檔案保存版 (`data/scores.json`)**
+   - 捨棄暫存的記憶體儲存，排行榜資料會異步寫入專案根目錄的 `data/scores.json` 實體硬碟資料庫中！
+   - 當資料夾或檔案不存在時，API 會自動偵測並初始化建立。即使重啟 `npm run dev` 開發伺服器，你的輝煌戰績也絕對不會消失！
+5. **🔥 地獄級「動態難度」與「雙管齊射」系統**
+   - 隨著 **WAVE 關卡數上升**，小蜜蜂的射擊頻率與雷射飛行速度將會直線暴增！
+   - **關卡達到 WAVE 3 以上時**，小蜜蜂將解鎖 **35% 機率的「雙管齊射 (Double Shot)」** 特技，同時從左右翅膀發射平行雷射，封鎖玩家的走位空間！
+6. **🛡️ 嚴格防作弊唯讀分數面板**
+   - 每擊滅一隻小蜜蜂固定獲得 **10 分**。
+   - 遊戲結束後，提交表單的分數欄位設定為 **唯讀 (Read-Only)**，游標顯示為紅色禁行圖示，玩家無法任意竄改分數，維護星際排行榜的公平性！
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🕹️ 駕駛員操作指南 (How To Play)
 
-To learn more about Next.js, take a look at the following resources:
+| 按鍵 | 動作 |
+| :--- | :--- |
+| **`A` / `D` 鍵** 或 **`←` / `→` 方向鍵** | 控制太空戰機左右移動 |
+| **`[空白鍵]`** 或 **`W` / `↑` 鍵** | 發射高能雷射（設有 260ms 發射冷卻，防按鍵轟炸） |
+| **`滑鼠點擊`** | 操作機台「START GAME」、「REPLAY」以及提交排行榜 |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 💥 遊戲规则與判定：
+* **得分機制**：擊落任何一隻小蜜蜂皆可穩定獲得 **10 分**。
+* **生命值機制**：戰機初始擁有 **3 顆生命值 (LIVES)**，每被粉色雷射擊中一次扣除 1 顆生命。
+* **Game Over 判定**：當生命值歸零，或是小蜜蜂群下壓至戰機的高度時，防線宣告失守，遊戲結束。
+* **進關機制**：清空畫面上的所有小蜜蜂後，會自動播放進關音樂並載入難度更高、射速更快的下一波 (WAVE)。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📡 排行榜 API 說明 (Leaderboard API)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+專案的前後端採用 Next.js App Router 進行連動，資料連接介面如下：
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **讀取排行榜資料 (GET)**
+  * 請求網址：`/api/scores`
+  * 說明：從 `data/scores.json` 檔案中讀取所有資料，並**自動由高至低依 score 排序**回傳。
+* **新增高分資料 (POST)**
+  * 請求網址：`/api/scores`
+  * 請求內容：`{ name: "玩家名稱", score: 數值 }`
+  * 說明：後端會自動修剪空白與驗證欄位（限制名稱最長 15 字），並自動寫入 `data/scores.json` 硬碟資料庫保存。
+
+---
+
+## 💻 本地安裝與執行指南 (Installation & Run)
+
+請確保您的電腦已安裝 **Node.js** (推薦 v18+)。
+
+1. **安裝相依性套件**
+   ```bash
+   npm install
+   ```
+2. **啟動本機開發伺服器**
+   ```bash
+   npm run dev
+   ```
+   * 啟動後在瀏覽器輸入 `http://localhost:3000` 即可進入大型機台大廳！
+3. **進行生產環境編譯打包**
+   ```bash
+   npm run build
+   ```
+   * 專案已通過完美的 TypeScript 型別與 ESLint 安全檢測，可以隨時一鍵打包！
+
+---
+
+## 🛠️ 開發技術棧 (Tech Stack)
+* **前端框架**：Next.js 16.2.6 (App Router) + React 19
+* **程式語言**：TypeScript
+* **樣式設計**：Vanilla CSS 3 (純原生樣式，無 Tailwind)
+* **音效合成**：Web Audio API
+* **物理與渲染**：HTML5 Canvas 2D Context + RequestAnimationFrame
+
+---
+
+## 🏆 榮譽開發團隊
+* **星際戰機總工程師**：[holly120](https://github.com/holly120)
+* **特別感謝**：Next.js 高中生教練 👾
